@@ -1,0 +1,60 @@
+# dsh-web-notify
+
+DeepSeek Harness（DSH）Web UI 用の双方向プラグイン。セッションの完了・エラー・操作待ちを OS 通知（ブラウザ Notification API）で知らせます。DSH `0.1.6-alpha.2` で動作確認済み（後続バージョンの互換性は保証しません。0.1.6 以前には対応しません）。
+
+## 動作
+
+- ホスト側: `sessionProjections.register` で `notifyTurn` プロジェクションを登録。`turn/start` の turn 番号と一致した `turn/end` の `reason.kind` を state `{ openTurn, last: { turn, reason } }` に fold し、wire view は `last` を返す
+- クライアント側: session list / session status / panel state を監視し、以下の条件で OS 通知を発火
+  - 非表示セッションの turn が `completed` / `blocked` / `error` で終了
+  - セッションが待機状態（`approval` / `question` / `plan-review`）になった
+- 通知テキストはセッションタイトル＋短い状態のみ（LLM 出力・コマンド・パスは含めない）
+- 通知をクリックすると該当セッションが開く
+
+## 抑制・重複排除
+
+- `max-tokens` / `aborted` / `interrupted` の turn 終了は通知しない
+- subagent セッション（`origin === 'subagent'`）は通知しない（クライアント側判定）
+- ページが visible・focused・会話表示中で、かつそのセッションがメインビューにある場合は通知しない
+- 重複排除: セッションごとの turn 番号、待機 `interaction.key`（待機解決でクリア）。ページ読み込み直後の初回観測は通知せずに記録する
+- 1 回に 1 件のみ発火（待機アクションが優先）、permission が `granted` のときのみ発火
+
+## 設定
+
+- `Settings → General → ブラウザ通知`: `Notification.permission` を表示。「デフォルト」なら「許可をリクエスト」ボタン、「許可済み」なら「テスト通知」ボタンを表示
+- 許可の取り下げはブラウザのサイト設定で行います
+
+## 導入
+
+プラグインディレクトリを DSH profile に追加します（ローカルディレクトリ形式）:
+
+```
+dsh plugin --profile web add <プラグインディレクトリのパス>
+```
+
+その後 DSH Web を再起動します（`dsh --profile web --host 127.0.0.1 --port 3080`）。
+
+## ビルド
+
+```
+npm run build
+```
+
+`lib/client.js` を再生成します（esbuild で CJS バンドルを `__ModuleLoader__.load` にラップ、`react` / `react/jsx-runtime` は external）。クライアントソースを変更した後は必ず再ビルドしてから再起動してください。
+
+## 確認
+
+```
+npm run check
+npm test
+```
+
+## 制約
+
+- Notification API の permission 付与が必要（ブラウザの origin ごとに管理）
+- 通知はページが読み込まれ接続が生存している間のみ発火します（Notification API はオフライン非対応）
+- ホスト側は plain JavaScript（zod 依存のみ）
+
+## ライセンス
+
+MIT License。詳細は [LICENSE](LICENSE) を参照してください。

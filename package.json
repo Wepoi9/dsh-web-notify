@@ -1,0 +1,44 @@
+{
+  "name": "dsh-web-notify",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "description": "DSH Web notification plugin: browser Notification API alerts on turn end and pending interactions.",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "lib",
+    "cordis.patch.yml",
+    "build.mjs"
+  ],
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "node --check src/index.js && node --check src/projection.js && node --check build.mjs && node --check lib/client.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.5"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-session",
+        "@deepseek-ai/dsh-client-ui-workspace"
+      ]
+    }
+  }
+}
