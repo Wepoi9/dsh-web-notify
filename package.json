@@ -1,6 +1,6 @@
 {
   "name": "dsh-web-notify",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "license": "MIT",
   "description": "DSH Web notification plugin: browser Notification API alerts on turn end and pending interactions.",

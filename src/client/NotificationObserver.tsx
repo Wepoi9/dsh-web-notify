@@ -38,6 +38,14 @@ interface ObserverState {
   current: Notification | null
 }
 
+interface Action {
+  kind: 'turn' | 'wait'
+  session: SessionId
+  title: string
+  body: string
+  label: string
+}
+
 export function NotificationObserver({ openSession, useSessions, useSessionStatus, usePanelInfo }: ObserverProps) {
   const list = useSessions((state) => state)
   const status = useSessionStatus((state) => state)
@@ -52,12 +60,11 @@ export function NotificationObserver({ openSession, useSessions, useSessionStatu
   useEffect(() => {
     const s = stateRef.current
     const conversational = isConversationAttended(document.visibilityState, document.hasFocus(), panel.activePanelId)
-    const actions: { kind: 'turn' | 'wait'; session: SessionId; title: string; body: string }[] = []
+    const actions: Action[] = []
     for (const id of list.ids) {
       const row = list.byId[id]
       if (row === undefined) continue
       const firstSight = !s.seen.has(row.id)
-      const waits = s.observedWaits.get(row.id) ?? new Set()
       const result = decideSession({
         excluded: row.origin === 'subagent',
         conversational,
@@ -66,10 +73,10 @@ export function NotificationObserver({ openSession, useSessions, useSessionStatu
         lastTurn: row.projectionValues?.notifyTurn ?? null,
         pending: status.get(row.id)?.pendingInteraction ?? null,
         observedTurn: s.observedTurns.get(row.id) ?? 0,
-        observedWaitKeys: waits,
+        observedWaitKeys: s.observedWaits.get(row.id) ?? new Set(),
       })
       s.observedTurns.set(row.id, result.observedTurn)
-      if (waits.size > 0) s.observedWaits.set(row.id, waits)
+      s.observedWaits.set(row.id, result.observedWaitKeys)
       if (firstSight) {
         s.seen.add(row.id)
         continue
@@ -81,18 +88,39 @@ export function NotificationObserver({ openSession, useSessions, useSessionStatu
     for (const id of [...s.observedTurns.keys()]) if (!ids.has(id)) s.observedTurns.delete(id)
     for (const id of [...s.observedWaits.keys()]) if (!ids.has(id)) s.observedWaits.delete(id)
 
-    const action = actions.find((entry) => entry.kind === 'wait') ?? actions[0]
-    if (action === undefined) return
+    const top = actions.find((entry) => entry.kind === 'wait') ?? actions[0]
+    if (top === undefined) return
     if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return
+    let title: string
+    let body: string
+    if (actions.length === 1) {
+      title = top.title
+      body = top.body
+    } else {
+      const counts = new Map<string, number>()
+      for (const entry of actions) counts.set(entry.label, (counts.get(entry.label) ?? 0) + 1)
+      title = `DSH · ${actions.length}件の更新`
+      body = [...counts.entries()].map(([label, count]) => `${count}件の${label}`).join('、')
+    }
     s.current?.close()
-    const notification = new Notification(action.title, { body: action.body })
+    const notification = new Notification(title, { body })
     notification.onclick = () => {
       window.focus()
-      openSession(action.session)
+      openSession(top.session)
       notification.close()
     }
     s.current = notification
   }, [list, status, panel, openSession])
+
+  useEffect(() => {
+    return () => {
+      const current = stateRef.current.current
+      if (current === null) return
+      current.onclick = null
+      current.close()
+      stateRef.current.current = null
+    }
+  }, [])
 
   return null
 }

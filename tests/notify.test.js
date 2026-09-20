@@ -70,43 +70,39 @@ test('conversation is attended only when visible, focused, and showing the conve
   const globalPanel = isConversationAttended('visible', true, 'plugins')
   assert.equal(decideSession({ ...base, conversational: globalPanel, inMainView: true, lastTurn: currentTurn }).action.kind, 'turn')
 
-  const waitKeys = new Set()
-  assert.equal(
-    decideSession({
-      ...base,
-      conversational: attended,
-      inMainView: true,
-      pending: { key: 'focused-wait', kind: 'approval' },
-      observedWaitKeys: waitKeys,
-    }).action,
-    null,
-  )
-  assert.equal(
-    decideSession({
-      ...base,
-      conversational: unfocused,
-      inMainView: true,
-      pending: { key: 'unfocused-wait', kind: 'question' },
-      observedWaitKeys: waitKeys,
-    }).action.kind,
-    'wait',
-  )
+  let r = decideSession({
+    ...base,
+    conversational: attended,
+    inMainView: true,
+    pending: { key: 'focused-wait', kind: 'approval' },
+    observedWaitKeys: new Set(),
+  })
+  assert.equal(r.action, null)
+  assert.ok(r.observedWaitKeys.has('focused-wait'))
+
+  r = decideSession({
+    ...base,
+    conversational: unfocused,
+    inMainView: true,
+    pending: { key: 'unfocused-wait', kind: 'question' },
+    observedWaitKeys: r.observedWaitKeys,
+  })
+  assert.equal(r.action.kind, 'wait')
 })
 
 test('wait notifications dedupe by key: new keys notify once, resolve clears, waits win over turns', () => {
-  const keys = new Set()
-  let r = decideSession({ ...base, pending: { key: 'k1', kind: 'approval' }, observedWaitKeys: keys })
+  let r = decideSession({ ...base, pending: { key: 'k1', kind: 'approval' }, observedWaitKeys: new Set() })
   assert.equal(r.action.kind, 'wait')
   assert.equal(r.action.title, 'テストセッション · 承認待ち')
   assert.equal(r.action.body, '操作を待っています')
-  assert.ok(keys.has('k1'))
+  assert.ok(r.observedWaitKeys.has('k1'))
 
   assert.equal(
-    decideSession({ ...base, pending: { key: 'k1', kind: 'approval' }, observedWaitKeys: keys }).action,
+    decideSession({ ...base, pending: { key: 'k1', kind: 'approval' }, observedWaitKeys: r.observedWaitKeys }).action,
     null,
   )
 
-  r = decideSession({ ...base, pending: { key: 'k2', kind: 'question' }, observedWaitKeys: keys })
+  r = decideSession({ ...base, pending: { key: 'k2', kind: 'question' }, observedWaitKeys: r.observedWaitKeys })
   assert.equal(r.action.kind, 'wait')
   assert.equal(r.action.title, 'テストセッション · 質問待ち')
 
@@ -114,16 +110,16 @@ test('wait notifications dedupe by key: new keys notify once, resolve clears, wa
     ...base,
     lastTurn: { turn: 1, reason: 'completed' },
     pending: { key: 'k3', kind: 'plan-review' },
-    observedWaitKeys: keys,
+    observedWaitKeys: r.observedWaitKeys,
   })
   assert.equal(r.action.kind, 'wait')
   assert.equal(r.action.title, 'テストセッション · 計画レビュー待ち')
   assert.equal(r.observedTurn, 1)
 
-  r = decideSession({ ...base, observedWaitKeys: keys })
+  r = decideSession({ ...base, observedWaitKeys: r.observedWaitKeys })
   assert.equal(r.action, null)
-  assert.equal(keys.size, 0)
+  assert.equal(r.observedWaitKeys.size, 0)
 
-  r = decideSession({ ...base, pending: { key: 'k1', kind: 'approval' }, observedWaitKeys: keys })
+  r = decideSession({ ...base, pending: { key: 'k1', kind: 'approval' }, observedWaitKeys: r.observedWaitKeys })
   assert.equal(r.action.kind, 'wait')
 })

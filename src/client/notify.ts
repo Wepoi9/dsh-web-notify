@@ -21,8 +21,15 @@ export interface DecisionInput {
   observedWaitKeys: Set<string>
 }
 
+export interface DecisionAction {
+  kind: 'turn' | 'wait'
+  title: string
+  body: string
+  label: string
+}
+
 export interface DecisionResult {
-  action: { kind: 'turn' | 'wait'; title: string; body: string } | null
+  action: DecisionAction | null
   observedTurn: number
   observedWaitKeys: Set<string>
 }
@@ -46,8 +53,8 @@ export function waitCopy(kind: string): string {
 }
 
 export function decideSession(input: DecisionInput): DecisionResult {
-  const observedWaitKeys = input.observedWaitKeys
-  if (input.excluded) return { action: null, observedTurn: input.observedTurn, observedWaitKeys }
+  if (input.excluded) return { action: null, observedTurn: input.observedTurn, observedWaitKeys: input.observedWaitKeys }
+  const observedWaitKeys = new Set(input.observedWaitKeys)
   let observedTurn = input.observedTurn
   let action: DecisionResult['action'] = null
   const show = !input.conversational || !input.inMainView
@@ -56,15 +63,16 @@ export function decideSession(input: DecisionInput): DecisionResult {
     observedTurn = input.lastTurn.turn
     const copy = turnCopy(input.lastTurn.reason)
     if (copy !== null && show) {
-      action = { kind: 'turn', title: `${input.title} · ${copy.label}`, body: copy.body }
+      action = { kind: 'turn', title: `${input.title} · ${copy.label}`, body: copy.body, label: copy.label }
     }
   }
 
   if (input.pending !== null) {
     if (!observedWaitKeys.has(input.pending.key)) {
       observedWaitKeys.add(input.pending.key)
+      const label = waitCopy(input.pending.kind)
       if (show) {
-        action = { kind: 'wait', title: `${input.title} · ${waitCopy(input.pending.kind)}`, body: '操作を待っています' }
+        action = { kind: 'wait', title: `${input.title} · ${label}`, body: '操作を待っています', label }
       }
     }
   } else if (observedWaitKeys.size > 0) {
