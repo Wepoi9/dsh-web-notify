@@ -1,6 +1,6 @@
 # dsh-web-notify
 
-DeepSeek Harness（DSH）Web UI 用の双方向プラグイン。セッションの完了・エラー・操作待ちを OS 通知（ブラウザ Notification API）で知らせます。DSH `0.1.6-alpha.2` で動作確認済み（後続バージョンの互換性は保証しません。0.1.6 以前には対応しません）。
+DeepSeek Harness（DSH）Web UI 用の双方向プラグイン。セッションの完了・エラー・操作待ちを OS 通知（ブラウザ Notification API）で知らせます。DSH `0.1.6-alpha.2` で動作確認済み。`0.1.7-alpha.2` ではプラグイン読み込み・一覧表示・テスト通知を確認済みです（後続バージョンの互換性は保証しません。`0.1.6-alpha.2` より前は対象外です）。
 
 ## 動作
 
@@ -50,6 +50,8 @@ npm run build
 npm run check
 npm test
 ```
+
+DSH `0.1.7-alpha.2` では、プラグイン読み込み・一覧表示・テスト通知を確認済みです。実セッション終了・エラー・操作待ちからの通知発火は未確認です。
 
 ## 制約
 
