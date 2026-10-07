@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { COPY } from './copy.ts'
 
 type PermissionState = 'granted' | 'denied' | 'default' | 'unsupported'
 
@@ -19,30 +20,30 @@ export function SettingsRow() {
   }
 
   const test = () => {
-    new Notification('DSH通知テスト', { body: '通知は正常に動作しています' })
+    new Notification(COPY.testTitle, { body: COPY.testBody })
   }
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '10px 16px' }}>
       <div>
-        <div style={{ fontWeight: 500 }}>ブラウザ通知</div>
-        <div style={{ fontSize: '0.85em', opacity: 0.65 }}>セッションの完了・エラー・操作待ちをOS通知で知らせます</div>
+        <div style={{ fontWeight: 500 }}>{COPY.settingsTitle}</div>
+        <div style={{ fontSize: '0.85em', opacity: 0.65 }}>{COPY.settingsDescription}</div>
       </div>
       {permission === 'default' && (
         <button type="button" onClick={() => void request()}>
-          許可をリクエスト
+          {COPY.requestPermission}
         </button>
       )}
       {permission === 'granted' && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span style={{ opacity: 0.65 }}>許可済み</span>
+          <span style={{ opacity: 0.65 }}>{COPY.granted}</span>
           <button type="button" onClick={test}>
-            テスト通知
+            {COPY.testNotification}
           </button>
         </div>
       )}
-      {permission === 'denied' && <span style={{ opacity: 0.65 }}>拒否済み（ブラウザ設定で変更できます）</span>}
-      {permission === 'unsupported' && <span style={{ opacity: 0.65 }}>このブラウザでは非対応</span>}
+      {permission === 'denied' && <span style={{ opacity: 0.65 }}>{COPY.denied}</span>}
+      {permission === 'unsupported' && <span style={{ opacity: 0.65 }}>{COPY.unsupported}</span>}
     </div>
   )
 }
