@@ -1,6 +1,11 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { COPY_BY_LANGUAGE } from '../src/client/copy.ts'
 import { decideSession, isConversationAttended } from '../src/client/notify.ts'
+
+// A browser picks the copy language from navigator.languages; this host has no
+// window to ask, so the notification copy under test is pinned to Japanese.
+const T = COPY_BY_LANGUAGE.ja
 
 const base = {
   conversational: false,
@@ -10,6 +15,7 @@ const base = {
   pending: null,
   observedTurn: 0,
   observedWaitKeys: new Set(),
+  copy: T,
 }
 
 test('turn end notifies once per new turn for completed/blocked/error only; suppressed while viewing the session', () => {

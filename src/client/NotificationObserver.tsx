@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { COPY } from './copy.ts'
 import { decideSession, isConversationAttended, type SessionId, type TurnFact, type WaitFact } from './notify.ts'
 
 interface SessionRow {
@@ -99,8 +100,8 @@ export function NotificationObserver({ openSession, useSessions, useSessionStatu
     } else {
       const counts = new Map<string, number>()
       for (const entry of actions) counts.set(entry.label, (counts.get(entry.label) ?? 0) + 1)
-      title = `DSH · ${actions.length}件の更新`
-      body = [...counts.entries()].map(([label, count]) => `${count}件の${label}`).join('、')
+      title = COPY.updateCount(actions.length)
+      body = COPY.aggregateJoin([...counts.entries()].map(([label, count]) => COPY.aggregateLabel(label, count)))
     }
     s.current?.close()
     const notification = new Notification(title, { body })

@@ -20,7 +20,7 @@ Additional behavior:
 - `max-tokens`, `aborted`, and `interrupted` turn endings are ignored;
 - subagent sessions are ignored;
 - duplicate turn and interaction notifications are suppressed;
-- multiple simultaneous updates are aggregated into one notification;
+- multiple simultaneous updates are aggregated into one notification (`DSH · 3 updates` / `1 Waiting, 2 Completed` in English, `DSH · 3件の更新` / `1件の操作待ち、2件の完了` in Japanese);
 - clicking a notification opens the highest-priority affected session;
 - notifications are emitted only when browser permission is `granted`.
 
@@ -65,7 +65,7 @@ Open **Settings → General → Browser notifications**.
 - When permission is granted, send a test notification.
 - Revoke permission from the browser's site settings.
 
-The current settings and notification copy is Japanese; notification behavior is otherwise locale-independent.
+Copy language follows the browser's preferred languages, not the DSH Language setting. A `ja` primary language subtag renders Japanese; anything else renders English.
 
 ## Privacy and notification content
 
@@ -74,7 +74,7 @@ OS notification centers and lock screens may display notification content.
 This plugin intentionally limits notification text to:
 
 - the DSH session display title;
-- a short state label such as completion, error, or pending approval.
+- a short state label such as `Completed`, `Error`, or `Waiting for approval` in English, and its Japanese counterpart in a Japanese browser session.
 
 It does **not** include LLM output, command text, or full filesystem paths. A session display title may still be derived by DSH from a workspace directory name or session identifier when no explicit title exists.
 
@@ -95,6 +95,7 @@ npm test
 - Browser notification permission is required and is scoped to the browser origin.
 - Notifications are available only while the DSH page is loaded and connected; this plugin does not implement offline push notifications.
 - DSH is evolving rapidly, so extension contracts can change between prerelease versions.
+- Copy language is chosen once when the client module loads; changing the browser's preferred languages takes effect on the next page reload.
 
 ## Contributing
 
