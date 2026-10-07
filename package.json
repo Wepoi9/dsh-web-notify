@@ -3,7 +3,17 @@
   "version": "0.1.1",
   "private": true,
   "license": "MIT",
-  "description": "DSH Web notification plugin: browser Notification API alerts on turn end and pending interactions.",
+  "description": "Community DSH plugin for browser and OS notifications on session completion, errors, and pending interactions.",
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "notifications",
+    "browser-notifications"
+  ],
+  "engines": {
+    "dsh": "0.1.6-alpha.2 || 0.1.7-alpha.2 || 0.1.7-rc.1 || 0.1.7-rc.2 || 0.2.0-rc.1 || 0.2.0-rc.2 || 0.2.1-alpha.1"
+  },
   "type": "module",
   "main": "src/index.js",
   "exports": {
@@ -29,6 +39,7 @@
     "esbuild": "^0.28.2"
   },
   "dsh": {
+    "manifestVersion": 1,
     "bundle": {
       "patch": "./cordis.patch.yml"
     },
