@@ -65,7 +65,7 @@ Open **Settings → General → Browser notifications**.
 - When permission is granted, send a test notification.
 - Revoke permission from the browser's site settings.
 
-Copy language follows the browser's preferred languages, not the DSH Language setting. A `ja` primary language subtag renders Japanese; anything else renders English.
+Copy language follows the browser's preferred languages, not the DSH Language setting. The first usable preference decides: `ja` renders Japanese, anything else renders English.
 
 ## Privacy and notification content
 
