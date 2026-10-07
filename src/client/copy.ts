@@ -81,7 +81,7 @@ const en: Copy = {
   waitLabels: {
     approval: 'Waiting for approval',
     'plan-review': 'Waiting for plan review',
-    question: 'Waiting for a question',
+    question: 'Waiting for a response',
   },
   waitFallbackLabel: 'Waiting',
   waitBody: 'Waiting for input',
