@@ -101,8 +101,11 @@ export function pickCopy(): Copy {
     for (const tag of tags) {
       if (typeof tag !== 'string') continue
       const primary = tag.toLowerCase().split('-')[0]
-      if (primary === 'ja') return ja
-      if (primary) return en
+      if (!primary) continue
+      // The first usable preference decides, matching the DSH locale resolver:
+      // a browser listing English first shows English even when Japanese is
+      // installed as a secondary language.
+      return primary === 'ja' ? ja : en
     }
   } catch {
     // No navigator: English.
