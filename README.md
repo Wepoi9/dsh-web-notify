@@ -38,9 +38,9 @@ Latest DSH version with recorded runtime verification: **0.2.1-alpha.3**, runtim
 | 0.2.0-rc.2 | Plugin load, inventory visibility, and test notification verified |
 | 0.2.1-alpha.1 | Plugin load, inventory visibility, and test notification verified |
 | 0.2.1-alpha.2 | Declared in `engines.dsh`; source-level compatibility reviewed, but plugin load, test notification, and real session notification triggers have **not** been runtime-verified on this version |
-| 0.2.1-alpha.3 | Plugin load, settings row visibility, granted permission status, test notification firing, and zero console errors verified on 2026-10-15 |
+| 0.2.1-alpha.3 | Plugin load, settings row visibility, granted permission status, test notification firing, and real-session firing — completion (including one resumed after an approval), waiting-for-interaction, and suppressed stop/interrupt — verified on 2026-10-15 with generic titles and fixed status copy |
 
-Real session completion/error/interaction notification firing on **0.2.1-alpha.3** has not yet been re-verified. On **0.2.1-alpha.2**, even the test-notification smoke check remains unverified. Other newer DSH versions are not assumed compatible until verified.
+Real-session completion and waiting-for-interaction notification firing on **0.2.1-alpha.3** is verified as listed (stop and interrupt do not notify). In the scripted browser, the notification permission and the not-attended gate were exercised through page-side overrides; the granted-permission display itself was checked in a real browser the same day. Real-session firing from **error**/**blocked** end states has not been triggered in this pass. On **0.2.1-alpha.2**, even the test-notification smoke check remains unverified. Other newer DSH versions are not assumed compatible until verified.
 
 ## Install
 
@@ -78,7 +78,7 @@ This plugin intentionally limits notification text to:
 - a generic `DSH` title prefix plus a short state label such as `Completed`, `Error`, or `Waiting for approval` in English, and its Japanese counterpart in a Japanese browser session;
 - generic counts for aggregated notifications.
 
-It does **not** show the DSH session display title, LLM output, command text, or full filesystem paths, so a session name holding customer or project names is not exposed on the OS lock screen. Only `session:current` capability is declared, and no session title or content strings are passed to plugin code. Clicking a notification opens the affected session, which is how a notification is tied back to it.
+It does **not** show the DSH session display title, LLM output, command text, or full filesystem paths, so a session name holding customer or project names is not exposed on the OS lock screen. The plugin declares no dedicated capability; it reads only the session id and the session finish/wait states as fixed enum values (completed, error, blocked, approval, …), and hands the OS notification nothing but a generic title, a fixed status label, and fixed status copy. Clicking a notification opens the affected session (the plugin passes only its session id there), which is how a notification is tied back to it.
 
 The plugin does not send notification data to an external service. Notifications are created locally through the browser Notification API.
 
