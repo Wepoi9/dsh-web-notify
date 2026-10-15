@@ -26,7 +26,7 @@ Additional behavior:
 
 ## Compatibility
 
-Latest DSH version with recorded runtime verification: **0.2.1-alpha.1**. The package manifest also declares **0.2.1-alpha.2** as a compatibility target; it has not yet been runtime-verified.
+Latest DSH version with recorded runtime verification: **0.2.1-alpha.3**, runtime-verified against the live app on 2026-10-15. The package manifest also declares **0.2.1-alpha.2** as a compatibility target; that declaration has not yet been runtime-verified.
 
 | DSH version | Verification |
 | --- | --- |
@@ -38,8 +38,9 @@ Latest DSH version with recorded runtime verification: **0.2.1-alpha.1**. The pa
 | 0.2.0-rc.2 | Plugin load, inventory visibility, and test notification verified |
 | 0.2.1-alpha.1 | Plugin load, inventory visibility, and test notification verified |
 | 0.2.1-alpha.2 | Declared in `engines.dsh`; source-level compatibility reviewed, but plugin load, test notification, and real session notification triggers have **not** been runtime-verified on this version |
+| 0.2.1-alpha.3 | Plugin load, settings row visibility, granted permission status, test notification firing, and zero console errors verified on 2026-10-15 |
 
-Real session completion/error/interaction notification firing on **0.2.1-alpha.1** has not yet been re-verified. On **0.2.1-alpha.2**, even the test-notification smoke check remains unverified. Other newer DSH versions are not assumed compatible until verified.
+Real session completion/error/interaction notification firing on **0.2.1-alpha.3** has not yet been re-verified. On **0.2.1-alpha.2**, even the test-notification smoke check remains unverified. Other newer DSH versions are not assumed compatible until verified.
 
 ## Install
 
