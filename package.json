@@ -1,6 +1,6 @@
 {
   "name": "dsh-web-notify",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "license": "MIT",
   "description": "Community DSH plugin for browser and OS notifications on session completion, errors, and pending interactions.",

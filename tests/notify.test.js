@@ -10,7 +10,6 @@ const T = COPY_BY_LANGUAGE.ja
 const base = {
   conversational: false,
   inMainView: false,
-  title: 'テストセッション',
   lastTurn: null,
   pending: null,
   observedTurn: 0,
@@ -21,7 +20,7 @@ const base = {
 test('turn end notifies once per new turn for completed/blocked/error only; suppressed while viewing the session', () => {
   let r = decideSession({ ...base, lastTurn: { turn: 1, reason: 'completed' } })
   assert.equal(r.action.kind, 'turn')
-  assert.equal(r.action.title, 'テストセッション · 完了')
+  assert.equal(r.action.label, '完了')
   assert.equal(r.action.body, '処理が完了しました')
   assert.equal(r.observedTurn, 1)
 
@@ -37,7 +36,7 @@ test('turn end notifies once per new turn for completed/blocked/error only; supp
 
   r = decideSession({ ...base, observedTurn: 2, lastTurn: { turn: 3, reason: 'blocked' } })
   assert.equal(r.action.kind, 'turn')
-  assert.equal(r.action.title, 'テストセッション · ブロック')
+  assert.equal(r.action.label, 'ブロック')
 
   r = decideSession({
     ...base,
@@ -99,7 +98,7 @@ test('conversation is attended only when visible, focused, and showing the conve
 test('wait notifications dedupe by key: new keys notify once, resolve clears, waits win over turns', () => {
   let r = decideSession({ ...base, pending: { key: 'k1', kind: 'approval' }, observedWaitKeys: new Set() })
   assert.equal(r.action.kind, 'wait')
-  assert.equal(r.action.title, 'テストセッション · 承認待ち')
+  assert.equal(r.action.label, '承認待ち')
   assert.equal(r.action.body, '操作を待っています')
   assert.ok(r.observedWaitKeys.has('k1'))
 
@@ -110,7 +109,7 @@ test('wait notifications dedupe by key: new keys notify once, resolve clears, wa
 
   r = decideSession({ ...base, pending: { key: 'k2', kind: 'question' }, observedWaitKeys: r.observedWaitKeys })
   assert.equal(r.action.kind, 'wait')
-  assert.equal(r.action.title, 'テストセッション · 質問待ち')
+  assert.equal(r.action.label, '質問待ち')
 
   r = decideSession({
     ...base,
@@ -119,7 +118,7 @@ test('wait notifications dedupe by key: new keys notify once, resolve clears, wa
     observedWaitKeys: r.observedWaitKeys,
   })
   assert.equal(r.action.kind, 'wait')
-  assert.equal(r.action.title, 'テストセッション · 計画レビュー待ち')
+  assert.equal(r.action.label, '計画レビュー待ち')
   assert.equal(r.observedTurn, 1)
 
   r = decideSession({ ...base, observedWaitKeys: r.observedWaitKeys })

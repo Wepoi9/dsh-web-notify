@@ -4,7 +4,6 @@ import { decideSession, isConversationAttended, type SessionId, type TurnFact, t
 
 interface SessionRow {
   id: SessionId
-  displayTitle: string
   origin?: 'subagent'
   retainedBy: { mainView?: number }
   projectionValues?: { notifyTurn?: TurnFact | null }
@@ -42,7 +41,6 @@ interface ObserverState {
 interface Action {
   kind: 'turn' | 'wait'
   session: SessionId
-  title: string
   body: string
   label: string
 }
@@ -70,7 +68,6 @@ export function NotificationObserver({ openSession, useSessions, useSessionStatu
         excluded: row.origin === 'subagent',
         conversational,
         inMainView: (row.retainedBy.mainView ?? 0) > 0,
-        title: row.displayTitle,
         lastTurn: row.projectionValues?.notifyTurn ?? null,
         pending: status.get(row.id)?.pendingInteraction ?? null,
         observedTurn: s.observedTurns.get(row.id) ?? 0,
@@ -95,7 +92,7 @@ export function NotificationObserver({ openSession, useSessions, useSessionStatu
     let title: string
     let body: string
     if (actions.length === 1) {
-      title = top.title
+      title = `${COPY.notificationPrefix} · ${top.label}`
       body = top.body
     } else {
       const counts = new Map<string, number>()

@@ -7,6 +7,7 @@
  */
 
 export type Copy = {
+  notificationPrefix: string
   settingsTitle: string
   settingsDescription: string
   requestPermission: string
@@ -27,6 +28,7 @@ export type Copy = {
 }
 
 const ja: Copy = {
+  notificationPrefix: 'DSH',
   settingsTitle: 'ブラウザ通知',
   settingsDescription: 'セッションの完了・エラー・操作待ちをOS通知で知らせます',
   requestPermission: '許可をリクエスト',
@@ -59,6 +61,7 @@ const ja: Copy = {
 }
 
 const en: Copy = {
+  notificationPrefix: 'DSH',
   settingsTitle: 'Browser notifications',
   settingsDescription: 'OS notifications for completed, errored, and waiting sessions',
   requestPermission: 'Request permission',

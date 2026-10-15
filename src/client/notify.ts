@@ -16,7 +16,6 @@ export interface DecisionInput {
   excluded?: boolean
   conversational: boolean
   inMainView: boolean
-  title: string
   lastTurn: TurnFact | null
   pending: WaitFact | null
   observedTurn: number
@@ -27,7 +26,6 @@ export interface DecisionInput {
 
 export interface DecisionAction {
   kind: 'turn' | 'wait'
-  title: string
   body: string
   label: string
 }
@@ -68,7 +66,7 @@ export function decideSession(input: DecisionInput): DecisionResult {
     observedTurn = input.lastTurn.turn
     const copyForTurn = turnCopy(input.lastTurn.reason, copy)
     if (copyForTurn !== null && show) {
-      action = { kind: 'turn', title: `${input.title} · ${copyForTurn.label}`, body: copyForTurn.body, label: copyForTurn.label }
+      action = { kind: 'turn', body: copyForTurn.body, label: copyForTurn.label }
     }
   }
 
@@ -77,7 +75,7 @@ export function decideSession(input: DecisionInput): DecisionResult {
       observedWaitKeys.add(input.pending.key)
       const label = waitCopy(input.pending.kind, copy)
       if (show) {
-        action = { kind: 'wait', title: `${input.title} · ${label}`, body: copy.waitBody, label }
+        action = { kind: 'wait', body: copy.waitBody, label }
       }
     }
   } else if (observedWaitKeys.size > 0) {

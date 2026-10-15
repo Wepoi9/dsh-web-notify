@@ -75,10 +75,10 @@ OS notification centers and lock screens may display notification content.
 
 This plugin intentionally limits notification text to:
 
-- the DSH session display title;
-- a short state label such as `Completed`, `Error`, or `Waiting for approval` in English, and its Japanese counterpart in a Japanese browser session.
+- a generic `DSH` title prefix plus a short state label such as `Completed`, `Error`, or `Waiting for approval` in English, and its Japanese counterpart in a Japanese browser session;
+- generic counts for aggregated notifications.
 
-It does **not** include LLM output, command text, or full filesystem paths. A session display title may still be derived by DSH from a workspace directory name or session identifier when no explicit title exists.
+It does **not** show the DSH session display title, LLM output, command text, or full filesystem paths, so a session name holding customer or project names is not exposed on the OS lock screen. Only `session:current` capability is declared, and no session title or content strings are passed to plugin code. Clicking a notification opens the affected session, which is how a notification is tied back to it.
 
 The plugin does not send notification data to an external service. Notifications are created locally through the browser Notification API.
 
