@@ -26,7 +26,7 @@ Additional behavior:
 
 ## Compatibility
 
-Latest DSH version with recorded runtime verification: **0.2.1-alpha.3**, runtime-verified against the live app on 2026-10-15. The package manifest also declares **0.2.1-alpha.2** as a compatibility target; that declaration has not yet been runtime-verified.
+Latest DSH version with recorded runtime verification: **0.2.1-rc.1**, runtime-verified against the live app on 2026-10-17. The package manifest also declares **0.2.1-alpha.2** as a compatibility target; that declaration has not yet been runtime-verified.
 
 | DSH version | Verification |
 | --- | --- |
@@ -39,8 +39,9 @@ Latest DSH version with recorded runtime verification: **0.2.1-alpha.3**, runtim
 | 0.2.1-alpha.1 | Plugin load, inventory visibility, and test notification verified |
 | 0.2.1-alpha.2 | Declared in `engines.dsh`; source-level compatibility reviewed, but plugin load, test notification, and real session notification triggers have **not** been runtime-verified on this version |
 | 0.2.1-alpha.3 | Plugin load, settings row visibility, granted permission status, test notification firing, and real-session firing — completion (including one resumed after an approval), waiting-for-interaction, and suppressed stop/interrupt — verified on 2026-10-15 with generic titles and fixed status copy |
+| 0.2.1-rc.1 | Build, `npm run check`, and 5/5 `npm test` passing on 2026-10-17; the rc.1 runtime compatibility preflight reports zero rejections; plugin load, Plugin Manager card and switch, settings row, granted permission status, test notification, and real-session firing (completion and waiting-for-interaction per the same-day UI pass, no session name in the notification, click-through verified the same day) verified on the live web UI on 2026-10-17; hot disable/enable through the Plugin Manager verified live on the same day (settings row removed and restored without a restart, a completed turn fired no notification while disabled, the next completed turn fired again after re-enable) plus the deselected-bundle state persisting across one restart |
 
-Real-session completion and waiting-for-interaction notification firing on **0.2.1-alpha.3** is verified as listed (stop and interrupt do not notify). In the scripted browser, the notification permission and the not-attended gate were exercised through page-side overrides; the granted-permission display itself was checked in a real browser the same day. Real-session firing from **error**/**blocked** end states has not been triggered in this pass. On **0.2.1-alpha.2**, even the test-notification smoke check remains unverified. Other newer DSH versions are not assumed compatible until verified.
+Real-session completion and waiting-for-interaction notification firing on **0.2.1-alpha.3** is verified as listed (stop and interrupt do not notify). In the scripted browser, the notification permission and the not-attended gate were exercised through page-side overrides; the granted-permission display itself was checked in a real browser the same day. Real-session firing from **error**/**blocked** end states has not been triggered in this pass, and on **0.2.1-rc.1** the stop/interrupt suppression and aggregated-notification display were not re-triggered (the plugin code is unchanged since the alpha.3 pass). On **0.2.1-alpha.2**, even the test-notification smoke check remains unverified. Other newer DSH versions are not assumed compatible until verified.
 
 ## Install
 
