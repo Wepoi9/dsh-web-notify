@@ -99,7 +99,7 @@ test('wait notifications dedupe by key: new keys notify once, resolve clears, wa
   let r = decideSession({ ...base, pending: { key: 'k1', kind: 'approval' }, observedWaitKeys: new Set() })
   assert.equal(r.action.kind, 'wait')
   assert.equal(r.action.label, '承認待ち')
-  assert.equal(r.action.body, '操作を待っています')
+  assert.equal(r.action.body, 'ユーザーの操作を待っています')
   assert.ok(r.observedWaitKeys.has('k1'))
 
   assert.equal(
