@@ -4,6 +4,6 @@ export const name = 'dsh-web-notify'
 
 export const inject = ['sessionProjections']
 
-export function apply(ctx) {
-  ctx.sessionProjections.register(notifyTurnDefinition)
+export async function apply(ctx) {
+  await ctx.sessionProjections.register(notifyTurnDefinition)
 }
