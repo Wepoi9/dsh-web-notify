@@ -95,6 +95,8 @@ npm test
 
 `npm run build` regenerates `lib/client.js` with esbuild. Rebuild after changing client source.
 
+The runtime `zod` dependency is declared as `^4.6.6` so the lockfile resolves past GHSA-mrhx-c7xc-m3w5 / CVE-2023-54404 (memory exhaustion while validating array schemas without a length bound, fixed in 4.6.6). This plugin validates no array schemas (`src/projection.js` uses only object, number, and string), so the vulnerable path is not reachable from its code.
+
 ## Limitations
 
 - Browser notification permission is required and is scoped to the browser origin.
